@@ -3,7 +3,6 @@ package com.mystic.skoolchat20;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class RegistrationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -102,7 +100,7 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         schoolName = findViewById(R.id.spinnerSchoolNames);
         button = findViewById(R.id.button2);
         password = findViewById(R.id.password);
-        bar = findViewById(R.id.prog);
+        bar = findViewById(R.id.progre);
 
     }
 

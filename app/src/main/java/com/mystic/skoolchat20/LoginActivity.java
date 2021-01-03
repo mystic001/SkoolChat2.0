@@ -7,12 +7,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText username , password;
     private Button btn_Sig, btn_Cancel;
+    private SkoolChatRepo skoolChatRepo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +24,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         btn_Sig.setOnClickListener(this);
         btn_Cancel.setOnClickListener(this);
+        skoolChatRepo = SkoolChatRepo.getInstanceOfSkoolchatRepo(this);
     }
 
     public void defineViews(){
@@ -35,8 +39,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         switch (view.getId()){
             case R.id.logSig:
-                Intent intent = new Intent(LoginActivity.this,SkoolActivity.class);
-                startActivity(intent);
+                ProgressBar bar = findViewById(R.id.progre);
+                String email = username.getText().toString().trim();
+                String pass = password.getText().toString().trim();
+                skoolChatRepo.loginToBase(email,pass,this,bar);
                 break;
 
             case R.id.logCancel:

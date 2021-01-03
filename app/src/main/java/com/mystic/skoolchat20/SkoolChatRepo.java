@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -219,6 +220,49 @@ public class SkoolChatRepo {
                 });
 
     }
+
+
+
+
+        public void loginToBase(String email, String password, final Context context, final ProgressBar bar){
+            if(email != null && password != null ){
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(context,"There was an error"+e.getMessage(),Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()){
+                                    //Go to the next Activity
+
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    assert user != null;
+                                    String userId = user.getUid();
+                                    bar.setVisibility(View.GONE);
+                                    Intent intent = new Intent(context,SkoolActivity.class);
+                                    context.startActivity(intent);
+                                }
+                            }
+                        });
+
+            }else{
+                Toast.makeText(context,"Email or password is empty",Toast.LENGTH_LONG).show();
+            }
+        }
+
+
+    public void logOut(Context context){
+        mAuth.signOut();
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
+
+
+
 
 
 
