@@ -1,0 +1,194 @@
+package com.mystic.skoolchat20;
+
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
+
+public class SkoolChatRepo {
+    private static SkoolChatRepo skoolChatRepo;
+    public static final String USERS = "users";
+    public static final String ADMIN_TREE = "admin_list";
+    public static final String SCHOOL_NAME = "school_name";
+    public static final String CHAT = "chat";
+    public static final String OWNER_CHAT = "chatwithowner";
+    public static final String USR = "USERSO";
+    public static final String ADMIN = "admin";
+    public static  final String CONFIRMED_TEACHERS = "teachers";
+    public static final String TEMP = "temporaryChats";
+
+    //private final DatabaseReference mDatabaseRef;
+    private final DatabaseReference mDatabaseRefUsers;
+    private final DatabaseReference mDatabaseChat;
+    //private static FarmRepository farmRepository;
+    private final FirebaseAuth mAuth;
+    private FireBaseLab fireBaseLabBase;
+    private LiveData<List<User>> users;
+
+    private SkoolChatRepo(Context context){
+
+        mDatabaseRefUsers = FirebaseDatabase.getInstance().getReference(USERS);
+        mDatabaseChat = FirebaseDatabase.getInstance().getReference(CHAT);
+        mAuth =FirebaseAuth.getInstance();
+        fireBaseLabBase = FireBaseLab.getInstanceOfFireBaseLab(context);
+        users = fireBaseLabBase.getAllUsers();
+    }
+
+    public static SkoolChatRepo getInstanceOfSkoolchatRepo(Context context){
+        if(skoolChatRepo == null ){
+            skoolChatRepo = new SkoolChatRepo(context);
+            return skoolChatRepo;
+        }
+        return  skoolChatRepo;
+    }
+
+
+
+
+    public void sendAdminRequest(String senderId, String receiverId, final Context context, final ProgressBar bar, final User admin){
+        bar.setVisibility(View.VISIBLE);
+
+        String adminId = fireBaseLabBase.mDatabaseReference_AdminChat.push().getKey();
+        Chat chat = new Chat(senderId,receiverId,adminId,admin);
+        assert adminId != null;
+
+        fireBaseLabBase.mDatabaseReference_AdminChat.child(adminId)
+                .setValue(chat)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context,"We could not add u",Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            bar.setVisibility(View.GONE);
+                            Intent intent = new Intent(context,WelcomeAdminActivity.class);
+                            intent.putExtra(ADMIN,admin);
+                            context.startActivity(intent);
+                        }
+                    }
+                });
+    }
+
+
+    public void addOwner(String email, String password, final User user, final Context context){
+       mAuth.createUserWithEmailAndPassword(email,password)
+               .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                   @Override
+                   public void onComplete(@NonNull Task<AuthResult> task) {
+                       if(task.isSuccessful()){
+                           FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                           assert firebaseUser != null;
+                           user.setUid(firebaseUser.getUid());
+                           String treeId = mDatabaseRefUsers.push().getKey();
+                           assert treeId != null;
+                           mDatabaseRefUsers
+                                   .child(treeId)
+                                   .setValue(user)
+                                   .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                       @Override
+                                       public void onComplete(@NonNull Task<Void> task) {
+                                           if(task.isSuccessful()){
+                                               Toast.makeText(context,"Succefully added",Toast.LENGTH_LONG).show();
+                                           }
+                                       }
+                                   })
+                                   .addOnFailureListener(new OnFailureListener() {
+                                       @Override
+                                       public void onFailure(@NonNull Exception e) {
+
+                                       }
+                                   });
+                       }
+                   }
+               })
+               .addOnFailureListener(new OnFailureListener() {
+                   @Override
+                   public void onFailure(@NonNull Exception e) {
+
+                   }
+               });
+
+    }
+
+
+    public void sendRequest(String senderId, String receiverId, final Context context, final ProgressBar bar, final User user){
+        bar.setVisibility(View.VISIBLE);
+        String chatId = mDatabaseChat.push().getKey();
+        Chat chat = new Chat(senderId,receiverId,chatId,user);
+        assert chatId != null;
+        mDatabaseChat
+                .child(chatId).setValue(chat)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    bar.setVisibility(View.GONE);
+                    Intent intent = new Intent(context, UserDashboardActivity.class);
+                    intent.putExtra(USR,user);
+                    intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TASK | intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("FarmRepo",e.getMessage());
+                Toast.makeText(context,"Farm could not be aadded",Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+
+    public void addTeachersInRepo(User user,Context context){
+        user.setUserVerified(true);
+        fireBaseLabBase.addTeachers(user,context);
+    }
+
+    public void removeChatRepo(String chatId){
+        fireBaseLabBase.removeTempChats(chatId);
+    }
+
+
+    public void removeAdminOwnerChatRepo(String chatId){
+        fireBaseLabBase.removeOwnerAdminChat(chatId);
+    }
+
+
+    public void addSchoolRepo(Context context, String schName, String phone){
+        fireBaseLabBase.addSchool(context,schName,phone);
+    }
+
+    public List<Chat> loadChatsForOwner(){
+        return fireBaseLabBase.loadChatbtwOwnerAndAdmin();
+    }
+
+
+    public void addAdminFromRepo(User user,Context context){
+        fireBaseLabBase.addAdmin(user,context);
+    }
+
+
+
+}

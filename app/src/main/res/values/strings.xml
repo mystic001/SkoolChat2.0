@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SkoolChat2.0</string>
+    <string-array name="schoolNames">
+        <item>string_value1</item>
+        <item>string_value2</item>
+        <item>string_value3</item>
+    </string-array>
+
+    <string-array name="role">
+        <item>teacher</item>
+        <item>student</item>
+    </string-array>
+</resources>

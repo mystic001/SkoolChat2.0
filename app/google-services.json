@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "12766982065",
+    "project_id": "skoolchat2-0",
+    "storage_bucket": "skoolchat2-0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12766982065:android:f7aa6a5c97b623ba965790",
+        "android_client_info": {
+          "package_name": "com.mystic.skoolchat20"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12766982065-g0hqho4upfnd34le19fta2b9o6f7vkjj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC74BFFm4gQUmw2AcdsuH_bVnZ9XSJtzQw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12766982065-g0hqho4upfnd34le19fta2b9o6f7vkjj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
