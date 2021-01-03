@@ -6,6 +6,7 @@
         <item>string_value3</item>
     </string-array>
 
+    <string name="logout">Logout</string>
     <string name="home_tab">Profile</string>
     <string name="recent_tab">Recent Chats</string>
     <string name="contact_tab">Contacts</string>

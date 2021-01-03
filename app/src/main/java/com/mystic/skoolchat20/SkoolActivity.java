@@ -7,6 +7,8 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
@@ -17,6 +19,10 @@ public class SkoolActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
+    private SkoolChatRepo skoolChatRepo;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,10 +30,12 @@ public class SkoolActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        skoolChatRepo = SkoolChatRepo.getInstanceOfSkoolchatRepo(this);
         viewPager2 = findViewById(R.id.viewpager);
         tabLayout = findViewById(R.id.tablayout);
         SectionPagerAdapter pagerAdapter = new SectionPagerAdapter(this);
         viewPager2.setAdapter(pagerAdapter);
+
 
         TabLayoutMediator mediator = new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
@@ -58,5 +66,20 @@ public class SkoolActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            skoolChatRepo.logOut(this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
 
 }

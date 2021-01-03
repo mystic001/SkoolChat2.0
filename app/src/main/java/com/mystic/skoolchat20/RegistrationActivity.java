@@ -37,11 +37,9 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
     private List<String> schoolList;
     private List<School> realSchools;
     private ProgressBar bar;
-    private DatabaseReference reference;
     private FirebaseAuth firebaseAuth;
     private Button button;
     private SkoolChatRepo instanceOfChatRepo;
-    private ArrayAdapter<String> dataAdapter;
     private int pos = 0;
     private String schoolNames = "First item";
     private static final String STUDENT = "student";
@@ -54,7 +52,7 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         firebaseAuth = FirebaseAuth.getInstance();
         schoolList = new ArrayList<>();
         realSchools = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.SCHOOL_NAME);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.SCHOOL_NAME);
 
         Log.d("Test","testing");
         reference.addValueEventListener(new ValueEventListener() {
@@ -105,7 +103,7 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
     }
 
     private void spinnerMethod() {
-        dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, schoolList);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, schoolList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         schoolName.setAdapter(dataAdapter);
         schoolName.setOnItemSelectedListener(this);
@@ -147,11 +145,13 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
                                     String userId = firebaseUser.getUid();
                                     if(realSchools.get(i).getStudentPassword().equals(passwordfromSch)){
                                         User user = new User(username,email,schoolNames,STUDENT,userId);
-                                        instanceOfChatRepo.registerUser(schoolNames,STUDENT,userId,user,RegistrationActivity.this,bar);
+                                        instanceOfChatRepo.registerUserToUserTree(userId,user,RegistrationActivity.this,bar);//Adds user to userTree
+                                        instanceOfChatRepo.registerUserToTheSchoolTree(schoolNames,STUDENT,userId,user,RegistrationActivity.this,bar);//Adds user to the schooltree
 
                                     }else if(realSchools.get(i).getTeacherpassword().equals(passwordfromSch)){
                                         User user = new User(username,email,schoolNames,TEACHER,userId);
-                                        instanceOfChatRepo.registerUser(schoolNames,TEACHER,userId,user,RegistrationActivity.this,bar);
+                                        instanceOfChatRepo.registerUserToUserTree(userId,user,RegistrationActivity.this,bar);//Adds user to userTree
+                                        instanceOfChatRepo.registerUserToTheSchoolTree(schoolNames,TEACHER,userId,user,RegistrationActivity.this,bar);//Adds user to the schooltree
 
                                     } else{
                                         Toast.makeText(RegistrationActivity.this,"Password you supplied does not match",Toast.LENGTH_LONG).show();

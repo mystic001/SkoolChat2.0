@@ -17,14 +17,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
 public class SkoolChatRepo {
     private static SkoolChatRepo skoolChatRepo;
     public static final String USERS = "users";
+    public static final String REAL_USER = "real_user";
     public static final String ADMIN_TREE = "admin_list";
     public static final String SCHOOL_NAME = "school_name";
     public static final String CHAT = "chat";
@@ -41,6 +44,7 @@ public class SkoolChatRepo {
     private final FirebaseAuth mAuth;
     private FireBaseLab fireBaseLabBase;
     private LiveData<List<User>> users;
+    private User realUser;
 
     private SkoolChatRepo(Context context){
 
@@ -192,8 +196,31 @@ public class SkoolChatRepo {
 
 
 
+    public void registerUserToUserTree(String userId, User user, final Context context, final ProgressBar bar){
+        bar.setVisibility(View.VISIBLE);
+        DatabaseReference mDatabaserefUser = FirebaseDatabase.getInstance().getReference(USERS).child(userId);
+        mDatabaserefUser
+                .setValue(user)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        bar.setVisibility(View.GONE);
+                        Toast.makeText(context,"Error"+e.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            bar.setVisibility(View.GONE);
+                            Toast.makeText(context,"Succesfully added to base",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
 
-    public void registerUser(String schoolName, String role, String userId, final User user, final Context context, final ProgressBar bar){
+
+    public void registerUserToTheSchoolTree(String schoolName, String role, String userId, final User user, final Context context, final ProgressBar bar){
         bar.setVisibility(View.VISIBLE);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(schoolName);
         databaseReference
@@ -215,7 +242,7 @@ public class SkoolChatRepo {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context,"there was an error"+e,Toast.LENGTH_LONG).show();
+                        Toast.makeText(context,"there was an error"+e.getMessage(),Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -242,8 +269,24 @@ public class SkoolChatRepo {
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     assert user != null;
                                     String userId = user.getUid();
+
+                                    DatabaseReference mDatabaserefUser = FirebaseDatabase.getInstance().getReference(USERS).child(userId);
+                                    //This line of code helps us to get the specific user from firebase base
+                                    mDatabaserefUser.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                          realUser = snapshot.getValue(User.class);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                            Toast.makeText(context,"There was an error"+error.getMessage(),Toast.LENGTH_LONG).show();
+                                        }
+                                    });
                                     bar.setVisibility(View.GONE);
                                     Intent intent = new Intent(context,SkoolActivity.class);
+                                    intent.putExtra(REAL_USER,realUser);
                                     context.startActivity(intent);
                                 }
                             }
