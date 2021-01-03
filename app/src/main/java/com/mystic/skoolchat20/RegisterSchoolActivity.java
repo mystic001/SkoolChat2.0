@@ -10,7 +10,7 @@ import android.widget.EditText;
 
 public class RegisterSchoolActivity extends AppCompatActivity {
 
-    EditText schoolName, schoolEmail,phoneNumber;
+    EditText schoolName, schoolEmail,phoneNumber,passwordStud,passwordteach;
     Button button5, buttonSignUp;
     SkoolChatRepo skoolChatRepo;
     @Override
@@ -23,9 +23,10 @@ public class RegisterSchoolActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String name = schoolName.getText().toString().trim();
-
+                String teachPass = passwordteach.getText().toString().trim().toLowerCase();
+                String studentPass = passwordStud.getText().toString().trim().toLowerCase();
                 String phone = phoneNumber.getText().toString().trim();
-                skoolChatRepo.addSchoolRepo(RegisterSchoolActivity.this,name,phone);
+                skoolChatRepo.addSchoolRepo(RegisterSchoolActivity.this,name,phone,teachPass,studentPass);
             }
         });
 
@@ -44,6 +45,8 @@ public class RegisterSchoolActivity extends AppCompatActivity {
         schoolName = findViewById(R.id.EdtSchoolName);
         schoolEmail = findViewById(R.id.EdtEmail);
         phoneNumber = findViewById(R.id.phoneNumber);
+        passwordStud = findViewById(R.id.studentpass);
+        passwordteach = findViewById(R.id.teacherspass);
         button5 = findViewById(R.id.button5);
         buttonSignUp = findViewById(R.id.button6);
     }

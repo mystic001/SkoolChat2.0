@@ -119,7 +119,7 @@ public class FireBaseLab {
 
 
 
-    public void addSchool(final Context context,String schName,String phn){
+    public void addSchool(final Context context,String schName,String phn,String teachersPass, String studentsPass){
         String schoolId = mDatabaseSchools.push().getKey();
         School school = new School(schoolId);
         FirebaseUser user = mAuth.getCurrentUser();
@@ -127,6 +127,8 @@ public class FireBaseLab {
         school.setAdminEmail(user.getEmail());
         school.setSchoolName(schName);
         school.setPhnoneNumber(phn);
+        school.setTeacherpassword(teachersPass);
+        school.setStudentPassword(studentsPass);
         assert schoolId != null;
         mDatabaseSchools.child(schoolId).setValue(school)
                 .addOnFailureListener(new OnFailureListener() {

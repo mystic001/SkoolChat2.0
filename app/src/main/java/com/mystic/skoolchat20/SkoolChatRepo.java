@@ -176,8 +176,8 @@ public class SkoolChatRepo {
     }
 
 
-    public void addSchoolRepo(Context context, String schName, String phone){
-        fireBaseLabBase.addSchool(context,schName,phone);
+    public void addSchoolRepo(Context context, String schName, String phone,String teacher,String student){
+        fireBaseLabBase.addSchool(context,schName,phone,teacher,student);
     }
 
     public List<Chat> loadChatsForOwner(){
@@ -187,6 +187,37 @@ public class SkoolChatRepo {
 
     public void addAdminFromRepo(User user,Context context){
         fireBaseLabBase.addAdmin(user,context);
+    }
+
+
+
+
+    public void registerUser(String schoolName, String role, String userId, final User user, final Context context, final ProgressBar bar){
+        bar.setVisibility(View.VISIBLE);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(schoolName);
+        databaseReference
+                .child(role)
+                .child(userId)
+                .setValue(user)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            bar.setVisibility(View.GONE);
+                            Intent intent = new Intent(context,SkoolActivity.class);
+                            intent.putExtra(ADMIN,user);
+                            intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TASK | intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context,"there was an error"+e,Toast.LENGTH_LONG).show();
+                    }
+                });
+
     }
 
 

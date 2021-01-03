@@ -6,6 +6,8 @@ public class School {
     private String adminEmail;
     private String schoolId;
     private String phnoneNumber;
+    private String teacherpassword;
+    private String studentPassword;
 
     public School(String schoolId) {
         this.schoolId = schoolId;
@@ -14,6 +16,23 @@ public class School {
 
     public School(){
 
+    }
+
+
+    public String getTeacherpassword() {
+        return teacherpassword;
+    }
+
+    public void setTeacherpassword(String teacherpassword) {
+        this.teacherpassword = teacherpassword;
+    }
+
+    public String getStudentPassword() {
+        return studentPassword;
+    }
+
+    public void setStudentPassword(String studentPassword) {
+        this.studentPassword = studentPassword;
     }
 
     public String getSchoolName() {

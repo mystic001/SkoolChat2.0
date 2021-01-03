@@ -73,15 +73,28 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:textSize="15sp"
-                                    android:text="role"
+                                    android:text="Enter the password supplied by school"
                                     android:layout_margin="10dp"/>
 
-                                <Spinner
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_margin="10dp">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/passwordFromSchool"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:hint="password" />
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                               <!-- <Spinner
                                     android:id="@+id/spinnerRole"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:entries="@array/role"
-                                    android:layout_margin="10dp"/>
+                                    android:layout_margin="10dp"/> -->
 
                                 <TextView
                                     android:layout_width="match_parent"
