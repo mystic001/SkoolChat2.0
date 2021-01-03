@@ -40,6 +40,7 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
     private FirebaseAuth firebaseAuth;
     private Button button;
     private SkoolChatRepo instanceOfChatRepo;
+    private ArrayAdapter<String> dataAdapter;
     private int pos = 0;
     private String schoolNames = "First item";
 
@@ -98,7 +99,7 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
     }
 
     private void spinnerMethod() {
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, schoolList);
+        dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, schoolList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         schoolName.setAdapter(dataAdapter);
         schoolName.setOnItemSelectedListener(this);

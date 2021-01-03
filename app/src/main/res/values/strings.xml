@@ -1,13 +1,19 @@
 <resources>
-    <string name="app_name">SkoolChat2.0</string>
+    <string name="app_name">SkoolChat</string>
     <string-array name="schoolNames">
         <item>string_value1</item>
         <item>string_value2</item>
         <item>string_value3</item>
     </string-array>
 
+    <string name="home_tab">Profile</string>
+    <string name="recent_tab">Recent Chats</string>
+    <string name="contact_tab">Contacts</string>
+
     <string-array name="role">
         <item>teacher</item>
         <item>student</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
