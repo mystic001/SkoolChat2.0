@@ -13,9 +13,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 public class SectionPagerAdapter extends FragmentStateAdapter {
 
     private Context context;
+    private User user;
 
-    public SectionPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public SectionPagerAdapter(@NonNull FragmentActivity fragmentActivity,User user) {
         super(fragmentActivity);
+        this.user = user;
     }
 
     @NonNull
@@ -24,12 +26,12 @@ public class SectionPagerAdapter extends FragmentStateAdapter {
 
         switch (position){
             case 0:
-                return new ProfileFragment();
+                return ProfileFragment.newInstance(user);
             case 1:
-                return new RecentFragment();
+                return RecentFragment.newInstance(user);
 
             case 2:
-                return new ChatFragment();
+                return ChatFragment.newInstance(user);
         }
 
         return null;

@@ -36,6 +36,7 @@ public class SkoolChatRepo {
     public static final String ADMIN = "admin";
     public static  final String CONFIRMED_TEACHERS = "teachers";
     public static final String TEMP = "temporaryChats";
+    public static final String USER_BUNDLE = "user_bundle";
 
     //private final DatabaseReference mDatabaseRef;
     private final DatabaseReference mDatabaseRefUsers;

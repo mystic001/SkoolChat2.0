@@ -28,13 +28,16 @@ public class SkoolActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_skool);
 
+        User user = (User) getIntent().getSerializableExtra(SkoolChatRepo.REAL_USER);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         skoolChatRepo = SkoolChatRepo.getInstanceOfSkoolchatRepo(this);
         viewPager2 = findViewById(R.id.viewpager);
         tabLayout = findViewById(R.id.tablayout);
-        SectionPagerAdapter pagerAdapter = new SectionPagerAdapter(this);
+        SectionPagerAdapter pagerAdapter = new SectionPagerAdapter(this,user);
         viewPager2.setAdapter(pagerAdapter);
+
 
 
         TabLayoutMediator mediator = new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
