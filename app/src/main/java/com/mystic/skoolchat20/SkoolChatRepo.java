@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SkoolChatRepo {
@@ -45,7 +46,9 @@ public class SkoolChatRepo {
     private final FirebaseAuth mAuth;
     private FireBaseLab fireBaseLabBase;
     private LiveData<List<User>> users;
+    private List<User> usersFromSchool;
     private User realUser;
+    private List<Chat> chatContainer;
 
     private SkoolChatRepo(Context context){
 
@@ -54,6 +57,8 @@ public class SkoolChatRepo {
         mAuth =FirebaseAuth.getInstance();
         fireBaseLabBase = FireBaseLab.getInstanceOfFireBaseLab(context);
         users = fireBaseLabBase.getAllUsers();
+        usersFromSchool = new ArrayList<>();
+
     }
 
     public static SkoolChatRepo getInstanceOfSkoolchatRepo(Context context){
@@ -296,6 +301,68 @@ public class SkoolChatRepo {
             }else{
                 Toast.makeText(context,"Email or password is empty",Toast.LENGTH_LONG).show();
             }
+        }
+
+
+
+        public List<User> loadStudOrTeaTree(String schname, String role){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(schname).child(role);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot dataSnapshot: snapshot.getChildren())        {
+                        User user = dataSnapshot.getValue(User.class);
+                        usersFromSchool.add(user);
+                    }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+        return  usersFromSchool;
+
+        }
+
+
+
+        public void sendMessge(Chat chat){
+        DatabaseReference referenceMessage = FirebaseDatabase.getInstance().getReference(CHAT);
+        referenceMessage.push().setValue(chat);
+        }
+
+
+        public List<Chat> loadMesages(final String receiverId, final String userId){
+            chatContainer = new ArrayList<>();
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(CHAT);
+
+            databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                chatContainer.clear();
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    Chat chat = dataSnapshot.getValue(Chat.class);
+                    assert chat != null;
+                    if(chat.getSenderId().equals(userId) && chat.getReceiverId().equals(receiverId) ||
+                    chat.getSenderId().equals(receiverId)&& chat.getReceiverId().equals(userId)){
+                        chatContainer.add(chat);
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+            return chatContainer;
         }
 
 

@@ -14,10 +14,9 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
-
     // TODO: Rename parameter arguments, choose names that match
 
-
+    private User userFrom;
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -41,7 +40,7 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            userFrom = (User) getArguments().getSerializable(SkoolChatRepo.USER_BUNDLE);
         }
     }
 

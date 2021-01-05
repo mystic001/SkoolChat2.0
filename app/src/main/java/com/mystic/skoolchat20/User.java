@@ -9,15 +9,10 @@ public class User implements Serializable {
     private String role;
     private String uid;
     private String password;
+    private String image_url;
     private boolean userVerified;
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 
     private String phoneNumber;
 
@@ -27,6 +22,7 @@ public class User implements Serializable {
         this.schoolName = schoolName;
         this.uid = uid;
         this.role = role;
+        this.image_url = "default";
     }
 
 
@@ -40,6 +36,7 @@ public class User implements Serializable {
         this.email = email;;
         this.uid = uid;
         this.role = "admin";
+        this.image_url = "default";
     }
 
 
@@ -50,10 +47,28 @@ public class User implements Serializable {
         this.name = name;
         this.email = email;;
         this.role = "owner";
+        this.image_url = "default";
     }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
 
     public String getName() {
         return name;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 
     public void setName(String name) {

@@ -6,6 +6,7 @@ public class Chat {
     private String senderId;
     private String receiverId ;
     private String chatId;
+    private String message;
 
 
     public Chat(){
@@ -31,6 +32,20 @@ public class Chat {
         this.receiverId = receiverId;
         this.user = user;
         this.chatId = chatId;
+    }
+
+    public Chat(String senderId, String receiverId){
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+    }
+
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public void setChatId(String chatId) {

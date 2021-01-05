@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RecentFragment">
+    tools:context=".ContactFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
@@ -12,5 +12,10 @@
         android:layout_gravity="center"
         android:textSize="20sp"
         android:text="Recent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recike"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>
