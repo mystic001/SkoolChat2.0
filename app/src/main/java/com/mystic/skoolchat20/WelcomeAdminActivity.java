@@ -61,7 +61,9 @@ public class WelcomeAdminActivity extends AppCompatActivity {
         butt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SharedPref.setUserState(WelcomeAdminActivity.this,false);
                 Intent intent = new Intent(WelcomeAdminActivity.this,SkoolActivity.class);
+                intent.putExtra(SkoolChatRepo.REAL_USER,user);
                 startActivity(intent);
             }
         });

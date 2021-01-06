@@ -49,6 +49,7 @@ public class SkoolChatRepo {
     private List<User> usersFromSchool;
     private User realUser;
     private List<Chat> chatContainer;
+    boolean isFirstTime;
 
     private SkoolChatRepo(Context context){
 
@@ -106,10 +107,9 @@ public class SkoolChatRepo {
                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
                            assert firebaseUser != null;
                            user.setUid(firebaseUser.getUid());
-                           String treeId = mDatabaseRefUsers.push().getKey();
-                           assert treeId != null;
+                           //String treeId = mDatabaseRefUsers.push().getKey();
                            mDatabaseRefUsers
-                                   .child(treeId)
+                                   .child(firebaseUser.getUid())
                                    .setValue(user)
                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
                                        @Override
@@ -267,7 +267,6 @@ public class SkoolChatRepo {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
                                     //Go to the next Activity
-
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     assert user != null;
                                     String userId = user.getUid();
@@ -278,18 +277,24 @@ public class SkoolChatRepo {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                           realUser = snapshot.getValue(User.class);
+                                          fetchUserdata(context, bar);
+                                          Log.d("realUser",realUser.getImage_url());
+
                                         }
+
+
+
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError error) {
-
                                             Toast.makeText(context,"There was an error"+error.getMessage(),Toast.LENGTH_LONG).show();
                                         }
                                     });
-                                    bar.setVisibility(View.GONE);
-                                    Intent intent = new Intent(context,SkoolActivity.class);
-                                    intent.putExtra(REAL_USER,realUser);
-                                    context.startActivity(intent);
+
+
+
+
+
                                 }
                             }
                         });
@@ -299,9 +304,35 @@ public class SkoolChatRepo {
             }
         }
 
+    private void fetchUserdata(Context context, ProgressBar bar) {
+        isFirstTime = SharedPref.getUserState(context);
+        bar.setVisibility(View.GONE);
+
+        if(realUser != null){
+            Log.d("User",realUser.getRole());
+            if(realUser.getRole().equals("admin")){
+                if(isFirstTime){
+                    Intent intent = new Intent(context, WelcomeAdminActivity.class);
+                    intent.putExtra(REAL_USER,realUser);
+                    context.startActivity(intent);
+                }else{
+                    Intent intent = new Intent(context, SkoolActivity.class);
+                    intent.putExtra(REAL_USER,realUser);
+                    context.startActivity(intent);
+                }
+
+            }else {
+                Intent intent = new Intent(context,SkoolActivity.class);
+                intent.putExtra(REAL_USER,realUser);
+                context.startActivity(intent);
+            }
+        } else{
+            Log.d("User","is null");
+        }
+    }
 
 
-        public List<User> loadStudOrTeaTree(String schname, String role){
+    public List<User> loadStudOrTeaTree(String schname, String role){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference(schname).child(role);
         reference.addValueEventListener(new ValueEventListener() {
             @Override

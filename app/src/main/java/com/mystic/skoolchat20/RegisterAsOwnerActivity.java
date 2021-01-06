@@ -10,7 +10,7 @@ import android.widget.EditText;
 
 public class RegisterAsOwnerActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText fullName,email, password,phone;
+    private EditText fullName,email, password,phone,image;
     private Button btn_SignUp, btn_Cancel,btn_Upload;
     private SkoolChatRepo skoolChatRepo;
     @Override
@@ -31,6 +31,7 @@ public class RegisterAsOwnerActivity extends AppCompatActivity implements View.O
         fullName = findViewById(R.id.ownername);
         email = findViewById(R.id.owneremail);
         phone = findViewById(R.id.ownerphone);
+        image = findViewById(R.id.image);
         password = findViewById(R.id.ownerpass);
         btn_SignUp = findViewById(R.id.button11);
         btn_Cancel = findViewById(R.id.button12);
@@ -45,10 +46,12 @@ public class RegisterAsOwnerActivity extends AppCompatActivity implements View.O
                 String mail = email.getText().toString().trim();
                 String word = password.getText().toString().trim();
                 String phoneno = phone.getText().toString().trim();
+                String imag = image.getText().toString().trim();
                 User user = new User(name,mail);
                 user.setPassword(word);
                 user.setPhoneNumber(phoneno);
                 user.setUserVerified(true);
+                user.setImage_url(imag);
                 skoolChatRepo.addOwner(mail,word,user,this);
                 break;
 

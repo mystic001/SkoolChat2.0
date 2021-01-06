@@ -64,7 +64,8 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
                     assert school != null;
                     schoolList.add(school.getSchoolName());
                 }
-                Log.d("School Names ",""+schoolList.size());
+                //spinnerMethod();
+                //Log.d("School Names ",""+schoolList.size());
             }
 
             @Override

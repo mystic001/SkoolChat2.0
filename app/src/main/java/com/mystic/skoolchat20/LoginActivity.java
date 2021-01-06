@@ -30,6 +30,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
+
         automaticLogin();
     }
 
@@ -80,6 +81,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     realUser = snapshot.getValue(User.class);
+                    Intent intent = new Intent(LoginActivity.this,SkoolActivity.class);
+                    intent.putExtra(SkoolChatRepo.REAL_USER,realUser);
+                    startActivity(intent);
                 }
 
                 @Override
@@ -87,9 +91,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(LoginActivity.this,"There was an error"+error.getMessage(),Toast.LENGTH_LONG).show();
                 }
             });
-            Intent intent = new Intent(LoginActivity.this,SkoolActivity.class);
-            intent.putExtra(SkoolChatRepo.REAL_USER,realUser);
-            startActivity(intent);
+
         }
     }
 }

@@ -172,7 +172,7 @@ public class ProfileFragment extends Fragment {
         defineViews(view);
 
         name.setText(userFrom.getName());
-        Glide.with(Objects.requireNonNull(getActivity())).asBitmap().load(Uri.parse("")).into(circleImageView);
+        Glide.with(Objects.requireNonNull(getActivity())).asBitmap().load(Uri.parse(userFrom.getImage_url())).into(circleImageView);
 
         if(userFrom.getRole().equals("admin")){
             button.setVisibility(View.VISIBLE);
