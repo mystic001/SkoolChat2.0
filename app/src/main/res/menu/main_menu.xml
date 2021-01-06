@@ -7,6 +7,5 @@
         android:title="@string/logout"
         android:icon="@drawable/ic_baseline_more_vert_24"
         android:orderInCategory="1"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom|withText" />
 </menu>

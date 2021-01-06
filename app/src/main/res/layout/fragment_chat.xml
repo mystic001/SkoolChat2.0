@@ -7,13 +7,15 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/nochats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Chat"
+        android:text="You have no recent chat"
         android:textSize="20sp" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerrrr"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

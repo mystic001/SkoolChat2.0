@@ -74,12 +74,8 @@ public class SkoolChatRepo {
 
     public void sendAdminRequest(String senderId, String receiverId, final Context context, final ProgressBar bar, final User admin){
         bar.setVisibility(View.VISIBLE);
-
-        String adminId = fireBaseLabBase.mDatabaseReference_AdminChat.push().getKey();
-        Chat chat = new Chat(senderId,receiverId,adminId,admin);
-        assert adminId != null;
-
-        fireBaseLabBase.mDatabaseReference_AdminChat.child(adminId)
+        Chat chat = new Chat(senderId,receiverId);
+        fireBaseLabBase.mDatabaseReference_AdminChat.push()
                 .setValue(chat)
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -142,7 +138,7 @@ public class SkoolChatRepo {
     }
 
 
-    public void sendRequest(String senderId, String receiverId, final Context context, final ProgressBar bar, final User user){
+    /*public void sendRequest(String senderId, String receiverId, final Context context, final ProgressBar bar, final User user){
         bar.setVisibility(View.VISIBLE);
         String chatId = mDatabaseChat.push().getKey();
         Chat chat = new Chat(senderId,receiverId,chatId,user);
@@ -169,7 +165,7 @@ public class SkoolChatRepo {
             }
         });
 
-    }
+    }*/
 
 
     public void addTeachersInRepo(User user,Context context){

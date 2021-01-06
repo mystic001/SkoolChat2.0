@@ -32,6 +32,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         skoolChatRepo = SkoolChatRepo.getInstanceOfSkoolchatRepo(this);
         mDatabaseChat = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.CHAT);
 
+
         chatList = new ArrayList<>();
         loadChats();
         adminViewAdapter = new AdminViewAdapter(chatList);
