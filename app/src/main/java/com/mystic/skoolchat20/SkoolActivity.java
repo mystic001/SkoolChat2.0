@@ -21,8 +21,6 @@ public class SkoolActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private SkoolChatRepo skoolChatRepo;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
