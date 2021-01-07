@@ -45,6 +45,7 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
     private static final String STUDENT = "student";
     private static final String TEACHER = "teacher";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +65,7 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
                     assert school != null;
                     schoolList.add(school.getSchoolName());
                 }
-                //spinnerMethod();
-                //Log.d("School Names ",""+schoolList.size());
+                spinnerMethod();
             }
 
             @Override
@@ -75,7 +75,6 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         });
         instanceOfChatRepo = SkoolChatRepo.getInstanceOfSkoolchatRepo(this);
         defineViews();
-        spinnerMethod();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,7 +112,9 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        Log.d("OntimeSelected","This is not working");
+        schoolNames = schoolList.get(i);
+        Log.d("SchoolName",schoolNames);
+        Log.d("OntimeSelected","This is working");
 
     }
 

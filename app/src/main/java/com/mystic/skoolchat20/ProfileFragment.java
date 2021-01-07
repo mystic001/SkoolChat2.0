@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class ProfileFragment extends Fragment {
     private User userFrom;
     private TextView textView;
     private CircleImageView circleImageView;
+    //private CircleImageView  imageView;
     private TextView name;
     private static final int IMAGE_VALUE = 2;
     private StorageReference storageReference;
@@ -172,9 +174,16 @@ public class ProfileFragment extends Fragment {
         defineViews(view);
 
         name.setText(userFrom.getName());
-        Glide.with(Objects.requireNonNull(getActivity())).asBitmap().load(Uri.parse(userFrom.getImage_url())).into(circleImageView);
+        Glide.with(getActivity())
+                .asBitmap()
+                .load(Uri.parse(userFrom.getImage_url()))
+                .placeholder(R.drawable.doctor)
+                .into(circleImageView);
 
-        if(userFrom.getRole().equals("admin")){
+
+
+
+        if(userFrom.getRole().equals("admin") || userFrom.getRole().equals("owner")){
             button.setVisibility(View.VISIBLE);
         }else {
             button.setVisibility(View.GONE);
@@ -202,6 +211,7 @@ public class ProfileFragment extends Fragment {
         name = view.findViewById(R.id.username);
         button = view.findViewById(R.id.button14);
         circleImageView = view.findViewById(R.id.cycleimage);
+        //imageView = view.findViewById(R.id.imageView);
 
     }
 }

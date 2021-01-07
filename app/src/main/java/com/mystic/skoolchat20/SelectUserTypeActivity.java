@@ -1,19 +1,32 @@
 package com.mystic.skoolchat20;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SelectUserTypeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private CardView regAdmin, regStud,regTeacher, quit, login;
+    private FirebaseAuth mAuth;
+    private User realUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_user_type);
+        mAuth = FirebaseAuth.getInstance();
         defineViews();
 
         regAdmin.setOnClickListener(this);
@@ -54,10 +67,39 @@ public class SelectUserTypeActivity extends AppCompatActivity implements View.On
 
 
             case R.id.login:
-                Intent intel = new Intent(SelectUserTypeActivity.this,LoginActivity.class);
-                startActivity(intel);
+                automaticLogin();
             default:
 
+        }
+    }
+
+
+
+    public void automaticLogin(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user != null){
+            String userId = user.getUid();
+            DatabaseReference mDatabaserefUser = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.USERS).child(userId);
+            //This line of code helps us to get the specific user from firebase base
+            mDatabaserefUser.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    realUser = snapshot.getValue(User.class);
+                    Intent intent = new Intent(SelectUserTypeActivity.this,SkoolActivity.class);
+                    intent.putExtra(SkoolChatRepo.REAL_USER,realUser);
+                    startActivity(intent);
+                    finish();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(SelectUserTypeActivity.this,"There was an error"+error.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
+
+        }else{
+            Intent intel = new Intent(SelectUserTypeActivity.this,LoginActivity.class);
+            startActivity(intel);
         }
     }
 

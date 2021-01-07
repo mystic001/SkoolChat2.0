@@ -27,12 +27,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth mAuth;
     private User realUser;
 
-    @Override
+    /*@Override
     protected void onStart() {
         super.onStart();
-
         automaticLogin();
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +83,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Intent intent = new Intent(LoginActivity.this,SkoolActivity.class);
                     intent.putExtra(SkoolChatRepo.REAL_USER,realUser);
                     startActivity(intent);
+                    finish();
                 }
 
                 @Override

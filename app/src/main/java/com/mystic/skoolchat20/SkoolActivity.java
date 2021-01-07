@@ -48,7 +48,7 @@ public class SkoolActivity extends AppCompatActivity {
                         tab.setIcon(R.drawable.ic_baseline_account_circle_24);
                         break;
                     case 1:
-                        tab.setText("Recent Chat");
+                        tab.setText("Contacts");
                         tab.setIcon(R.drawable.ic_baseline_chat_24);
                         break;
                     case 2:

@@ -5,8 +5,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,11 +31,14 @@ public class FireBaseLab {
     private MutableLiveData<List<Chat>> liveChats;
     private List<User> userList;
     private List<Chat> chats;
+    private List<User> teacherOrStudentList;
+    private List<User> specificList;
+    private List<User> allUsers;
     private List<Chat> chatsBtwOwnerAndAdmin;
     private List<School> schools;
     private FirebaseAuth mAuth;
     private final DatabaseReference AdminFireBase;
-    private final DatabaseReference firebaseDatabaseUsers;
+    public final DatabaseReference firebaseDatabaseUsers;
     private final DatabaseReference mDatabasepermChat ;
     public final DatabaseReference mDatabasetempChat;
     public final DatabaseReference mDatabaseReference_AdminChat;
@@ -48,8 +53,11 @@ public class FireBaseLab {
         liveChats = new MutableLiveData<>();
         mContext = context.getApplicationContext();
         chatsBtwOwnerAndAdmin = new ArrayList<>();
+        allUsers = new ArrayList<>();
         userList = new ArrayList<>();
         chats = new ArrayList<>();
+        teacherOrStudentList = new ArrayList<>();
+        specificList = new ArrayList<>();
         schools = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
         AdminFireBase = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.ADMIN_TREE);
@@ -264,6 +272,85 @@ public class FireBaseLab {
                         Toast.makeText(context,"An error occurred",Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+
+    //This loads all users for a particular school
+    public List<User> loadUsersForSpecificSchools(final String schname){
+        firebaseDatabaseUsers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                specificList.clear();
+                for(DataSnapshot snapsh : snapshot.getChildren()){
+                    User user = snapsh.getValue(User.class);
+                    assert user != null;
+                    if(user.getSchoolName().equals(schname)){
+                        specificList.add(user);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return specificList;
+    }
+
+
+    //This loads either the teachers or students of a particular school based on the value of role supplied to it
+    public List<User> teachersOrStudent(final String schname, final String role){
+        firebaseDatabaseUsers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                teacherOrStudentList.clear();
+                for(DataSnapshot snapsh : snapshot.getChildren()){
+                    User user = snapsh.getValue(User.class);
+                    assert user != null;
+                    if(user.getSchoolName().equals(schname) && user.getRole().equals(role)){
+                        teacherOrStudentList.add(user);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return teacherOrStudentList;
+    }
+
+    //This loads all users for the owner to see
+    public List<User> loadAllUsers(final RecyclerView recyclerView, final Context context){
+        firebaseDatabaseUsers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                allUsers.clear();
+                String userId = mAuth.getCurrentUser().getUid();
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    User user = dataSnapshot.getValue(User.class);
+                    assert user != null;
+                    if(!user.getUid().equals(userId)){
+                        allUsers.add(user);
+                    }
+                }
+
+                ContactAdapter adapter = new ContactAdapter(allUsers,context);
+                recyclerView.setAdapter(adapter);
+                Log.d("USERS",""+allUsers.size());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(mContext,error.getMessage(),Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+        return  allUsers;
     }
 
 

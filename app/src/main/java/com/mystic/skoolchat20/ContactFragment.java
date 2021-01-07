@@ -3,15 +3,23 @@ package com.mystic.skoolchat20;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +38,7 @@ public class ContactFragment extends Fragment {
    private SkoolChatRepo skoolChatRepo;
    private RecyclerView recyclerView;
    private ContactAdapter contactAdapter;
+   private TextView textView;
     public ContactFragment() {
         // Required empty public constructor
     }
@@ -53,21 +62,15 @@ public class ContactFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             userFrom = (User) getArguments().getSerializable(SkoolChatRepo.USER_BUNDLE);
-            skoolChatRepo = SkoolChatRepo.getInstanceOfSkoolchatRepo(getContext());
-            if(userFrom.getRole().equals("teacher")){
-                users = skoolChatRepo.loadStudOrTeaTree(userFrom.getSchoolName(),"student");
-            }else if(userFrom.getRole().equals("student")){
-                users = skoolChatRepo.loadStudOrTeaTree(userFrom.getSchoolName(),"teacher");
-            }else{
-                Toast.makeText(getActivity(),"There is nothing for you yet even though u are the owner or and Admin",Toast.LENGTH_LONG).show();
-            }
-            contactAdapter = new ContactAdapter(users,getActivity());
+            //contactAdapter = new ContactAdapter(users,getActivity());
+            //recyclerView.setAdapter(contactAdapter);
         }else{
             Toast.makeText(getActivity(),"Argumments are null",Toast.LENGTH_LONG).show();
         }
 
+        users = new ArrayList<>();
 
-        contactAdapter.moveToChatScreen(new ContactAdapter.MyListener() {
+       /* contactAdapter.moveToChatScreen(new ContactAdapter.MyListener() {
             @Override
             public void respond(int pos) {
                 Intent intent = new Intent(getActivity(),ChatScreenActivity.class);
@@ -75,7 +78,8 @@ public class ContactFragment extends Fragment {
                 intent.putExtra(ChatScreenActivity.RECEIVER_USER,user);
                 getActivity().startActivity(intent);
             }
-        });
+        });*/
+
 
     }
 
@@ -83,16 +87,85 @@ public class ContactFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_recent, container, false);
-        TextView textView = view.findViewById(R.id.nocontacts);
+        textView = view.findViewById(R.id.nocontacts);
 
-        if(users.size()>0){
+        /*f(users.size()>0){
             textView.setVisibility(View.GONE);
         }else{
             textView.setVisibility(View.VISIBLE);
-        }
+        }*/
         recyclerView = view.findViewById(R.id.recike);
-        recyclerView.setAdapter(contactAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+
+        skoolChatRepo = SkoolChatRepo.getInstanceOfSkoolchatRepo(getContext());
+        if(userFrom.getRole().equals("teacher")){
+            //users = skoolChatRepo.loadStudOrTeaTree(userFrom.getSchoolName(),"student");
+            //This loads all the students for the teachers
+            users = skoolChatRepo.teacherOrStudent(userFrom.getSchoolName(),"student");
+        }else if(userFrom.getRole().equals("student")){
+            //users = skoolChatRepo.loadStudOrTeaTree(userFrom.getSchoolName(),"teacher");
+            //This loads all the teachers for the students
+            users = skoolChatRepo.teacherOrStudent(userFrom.getSchoolName(),"teacher");
+        }else if(userFrom.getRole().equals("admin")){
+            //This loads all the members of a school
+            users = skoolChatRepo.specifiUser(userFrom.getSchoolName());
+        }else if(userFrom.getRole().equals("owner")){
+            //This loads all the people registered on the platform
+            //users = skoolChatRepo.loadAllUsers(recyclerView,getActivity());
+            loadAllUsers();
+            // Log.d("Users",""+users.size());
+        }
+
+        else{
+            Toast.makeText(getActivity(),"There is no role attached to u",Toast.LENGTH_LONG).show();
+        }
+
+
         return view;
+    }
+
+
+
+    public void loadAllUsers(){
+        DatabaseReference refeUsers = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.USERS);
+        refeUsers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                users.clear();
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    User user = dataSnapshot.getValue(User.class);
+                    users.add(user);
+                }
+                Log.d("UsersForowner",""+users.size());
+                contactAdapter = new ContactAdapter(users,getActivity());
+                recyclerView.setAdapter(contactAdapter);
+
+                if(users.size()>0){
+                    textView.setVisibility(View.GONE);
+                }else{
+                    textView.setVisibility(View.VISIBLE);
+                }
+
+                contactAdapter.moveToChatScreen(new ContactAdapter.MyListener() {
+                    @Override
+                    public void respond(int pos) {
+                        Intent intent = new Intent(getActivity(),ChatScreenActivity.class);
+                        User user = users.get(pos);
+                        intent.putExtra(ChatScreenActivity.RECEIVER_USER,user);
+                        getActivity().startActivity(intent);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(),error.getMessage(),Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+
     }
 }

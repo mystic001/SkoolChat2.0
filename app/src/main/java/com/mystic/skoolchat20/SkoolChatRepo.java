@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -341,6 +342,7 @@ public class SkoolChatRepo {
                         User user = dataSnapshot.getValue(User.class);
                         usersFromSchool.add(user);
                     }
+
             }
 
             @Override
@@ -390,6 +392,41 @@ public class SkoolChatRepo {
         });
 
             return chatContainer;
+        }
+
+        //this list returns all users for a particular school so the admin could see
+        public List<User> specifiUser(String schname){
+        return fireBaseLabBase.loadUsersForSpecificSchools(schname);
+        }
+
+        public List<User> teacherOrStudent(String schname,String role){
+        return  fireBaseLabBase.teachersOrStudent(schname,role);
+        }
+
+        //This loads all the users in th databsae
+        public List<User> loadAllUsers(RecyclerView recyclerView, Context context){
+        //final List<User> listOfUsers = new ArrayList<>(); //fireBaseLabBase.loadAllUsers();
+
+            return fireBaseLabBase.loadAllUsers(recyclerView,context);
+            /*fireBaseLabBase.firebaseDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    listOfUsers.clear();
+                    for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                        User user = dataSnapshot.getValue(User.class);
+                        listOfUsers.add(user);
+                    }
+
+                    Log.d("USERS",""+listOfUsers.size());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                   // Toast.makeText(co,error.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
+            Log.d("ListOfUsers",""+listOfUsers.size());*/
+
         }
 
 
