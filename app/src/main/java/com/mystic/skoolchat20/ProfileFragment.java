@@ -55,7 +55,7 @@ public class ProfileFragment extends Fragment {
     private static final int IMAGE_VALUE = 2;
     private StorageReference storageReference;
     private Uri imageUri;
-    private Button button,probutton;
+    private Button button,probutton, ownerbut;
     private StorageTask uploadtask;
     public ProfileFragment() {
         // Required empty public constructor
@@ -130,8 +130,9 @@ public class ProfileFragment extends Fragment {
                         //HashMap<String, Object> map = new HashMap<>();
                         //map.put("Image_url",mUri);
                         //reference.updateChildren(map);
-                        startActivity(getActivity().getIntent());
                         getActivity().finish();
+                        startActivity(getActivity().getIntent());
+
                         progressDialog.dismiss();
 
                     }else{
@@ -208,6 +209,23 @@ public class ProfileFragment extends Fragment {
         });
 
 
+
+        if(userFrom.getRole().equals("owner")){
+            ownerbut.setVisibility(View.VISIBLE);
+        }else{
+            ownerbut.setVisibility(View.GONE);
+        }
+
+
+        ownerbut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),OwnerActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
         probutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -224,6 +242,7 @@ public class ProfileFragment extends Fragment {
         button = view.findViewById(R.id.button14);
         circleImageView = view.findViewById(R.id.cycleimage);
         probutton = view.findViewById(R.id.button15);
+        ownerbut = view.findViewById(R.id.button16);
         //imageView = view.findViewById(R.id.imageView);
 
     }

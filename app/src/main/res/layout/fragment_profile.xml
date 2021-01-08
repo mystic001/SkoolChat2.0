@@ -72,6 +72,13 @@
             android:layout_height="wrap_content"
             android:text="change profile picture" />
 
+        <Button
+            android:id="@+id/button16"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Owner Dashboard"
+            android:visibility="gone" />
+
         <!--<de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageView"
             android:layout_width="200dp"

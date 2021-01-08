@@ -60,7 +60,7 @@ public class FireBaseLab {
         specificList = new ArrayList<>();
         schools = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
-        AdminFireBase = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.ADMIN_TREE);
+        AdminFireBase = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.USERS);
         firebaseDatabaseUsers = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.USERS);
         mDatabasetempChat = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.TEMP);
         mDatabasepermChat = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.CHAT);
@@ -253,10 +253,9 @@ public class FireBaseLab {
 
 
     public void addAdmin(final User user, final Context context){
-        String adminId = AdminFireBase.push().getKey();
         user.setUserVerified(true);
         AdminFireBase
-                .child(adminId)
+                .child(user.getUid())
                 .setValue(user)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

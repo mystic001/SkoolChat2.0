@@ -62,7 +62,7 @@ public class ChatScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }else{
             final ReceiverView receiverView = (ReceiverView) holder;
             receiverView.txt.setText(chat.getMessage());
-            String receiverpic = chat.getReceiverId();
+            String receiverpic = chat.getSenderId();
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.USERS);
             reference.child(receiverpic).addValueEventListener(new ValueEventListener() {
                 @Override

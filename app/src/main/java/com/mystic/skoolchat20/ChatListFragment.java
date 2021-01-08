@@ -82,6 +82,8 @@ public class ChatListFragment extends Fragment {
             });
         }
 
+        getListOfChats();
+
     }
 
 
@@ -100,8 +102,6 @@ public class ChatListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         //getList of chats gets all the data needed to display users you have already chatted with;
-        getListOfChats();
-
         return view;
     }
 

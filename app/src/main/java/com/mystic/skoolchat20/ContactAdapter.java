@@ -2,6 +2,7 @@ package com.mystic.skoolchat20;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +43,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewCont
     public void onBindViewHolder(@NonNull ViewContain holder, int position) {
 
         User user = users.get(position);
+
+        Log.d("UserValue" ,""+user.getImage_url());
         Glide.with(context)
                 .asBitmap()
-                .load(Uri.parse("https://cdn.pixabay.com/photo/2016/11/22/06/05/girl-1848454__340.jpg"))
+                .placeholder(R.drawable.doctor)
+                .load(Uri.parse(user.getImage_url()))
                 .into(holder.contactImage);
 
         holder.txtName.setText(user.getName());
