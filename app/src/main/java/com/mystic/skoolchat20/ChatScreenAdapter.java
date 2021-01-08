@@ -1,5 +1,8 @@
 package com.mystic.skoolchat20;
 
+import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -22,10 +31,12 @@ public class ChatScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private FirebaseUser user;
     private List<Chat> listOfChats;
+    Context context;
 
 
-    public ChatScreenAdapter(List<Chat> listOfChats) {
+    public ChatScreenAdapter(List<Chat> listOfChats,Context context) {
         this.listOfChats = listOfChats;
+        this.context = context;
     }
 
     @NonNull
@@ -49,8 +60,31 @@ public class ChatScreenAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             SenderView senderView = (SenderView) holder;
             senderView.textView.setText(chat.getMessage());
         }else{
-            ReceiverView receiverView = (ReceiverView) holder;
+            final ReceiverView receiverView = (ReceiverView) holder;
             receiverView.txt.setText(chat.getMessage());
+            String receiverpic = chat.getReceiverId();
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.USERS);
+            reference.child(receiverpic).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User user = snapshot.getValue(User.class);
+                    assert user != null;
+                    String pic = user.getImage_url();
+                    Glide.with(context)
+                            .asBitmap()
+                            .placeholder(R.drawable.doctor)
+                            .load(Uri.parse(pic))
+                            .into(receiverView.imageView);
+
+                    Log.d("Imaage",pic);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
 
         }
 

@@ -69,7 +69,6 @@ public class ChatScreenActivity extends AppCompatActivity {
         assert userReceiver != null;
         final String receiverId = userReceiver.getUid();
 
-
         username = findViewById(R.id.usernamee);
         imageView = findViewById(R.id.profileImage);
         Glide.with(this).asBitmap().load(userReceiver.getImage_url()).into(imageView);
@@ -101,10 +100,7 @@ public class ChatScreenActivity extends AppCompatActivity {
 
         //chatScreenAdapter = new ChatScreenAdapter(chatContainer);
         recyclerView = findViewById(R.id.cycler);
-
-
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(chatScreenAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         linearLayoutManager.setStackFromEnd(true);
@@ -149,8 +145,8 @@ public class ChatScreenActivity extends AppCompatActivity {
                         chatContainer.add(chat);
                     }
 
-                    chatScreenAdapter = new ChatScreenAdapter(chatContainer);
-                    chatScreenAdapter.notifyDataSetChanged();
+                    chatScreenAdapter = new ChatScreenAdapter(chatContainer,ChatScreenActivity.this);
+                    recyclerView.setAdapter(chatScreenAdapter);
                 }
             }
 

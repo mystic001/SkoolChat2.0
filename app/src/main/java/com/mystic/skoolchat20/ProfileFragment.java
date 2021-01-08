@@ -55,7 +55,7 @@ public class ProfileFragment extends Fragment {
     private static final int IMAGE_VALUE = 2;
     private StorageReference storageReference;
     private Uri imageUri;
-    private Button button;
+    private Button button,probutton;
     private StorageTask uploadtask;
     public ProfileFragment() {
         // Required empty public constructor
@@ -126,9 +126,12 @@ public class ProfileFragment extends Fragment {
                         Uri downloadUri = task.getResult();
                         String mUri = downloadUri.toString();
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference(SkoolChatRepo.USERS).child(userFrom.getUid());
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("Image_url",mUri);
-                        reference.updateChildren(map);
+                        reference.child("image_url").setValue(mUri);
+                        //HashMap<String, Object> map = new HashMap<>();
+                        //map.put("Image_url",mUri);
+                        //reference.updateChildren(map);
+                        startActivity(getActivity().getIntent());
+                        getActivity().finish();
                         progressDialog.dismiss();
 
                     }else{
@@ -199,6 +202,15 @@ public class ProfileFragment extends Fragment {
         circleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                viewImage();
+                //uploadImage();
+            }
+        });
+
+
+        probutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 uploadImage();
             }
         });
@@ -211,7 +223,15 @@ public class ProfileFragment extends Fragment {
         name = view.findViewById(R.id.username);
         button = view.findViewById(R.id.button14);
         circleImageView = view.findViewById(R.id.cycleimage);
+        probutton = view.findViewById(R.id.button15);
         //imageView = view.findViewById(R.id.imageView);
 
+    }
+
+    public void viewImage(){
+        Intent intent = new Intent(getActivity(),DisplayImageActivity.class);
+        intent.putExtra("Image",userFrom.getImage_url());
+        startActivity(intent);
+        getActivity().finish();
     }
 }

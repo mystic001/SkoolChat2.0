@@ -430,6 +430,8 @@ public class SkoolChatRepo {
         }
 
 
+
+
     public void logOut(Context context){
         mAuth.signOut();
         Intent intent = new Intent(context, LoginActivity.class);

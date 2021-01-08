@@ -39,6 +39,7 @@ public class ContactFragment extends Fragment {
    private RecyclerView recyclerView;
    private ContactAdapter contactAdapter;
    private TextView textView;
+   private LinearLayoutManager linearLayoutManager;
     public ContactFragment() {
         // Required empty public constructor
     }
@@ -64,22 +65,33 @@ public class ContactFragment extends Fragment {
             userFrom = (User) getArguments().getSerializable(SkoolChatRepo.USER_BUNDLE);
             //contactAdapter = new ContactAdapter(users,getActivity());
             //recyclerView.setAdapter(contactAdapter);
+            users = new ArrayList<>();
+            skoolChatRepo = SkoolChatRepo.getInstanceOfSkoolchatRepo(getContext());
+            if(userFrom.getRole().equals("teacher")){
+                //users = skoolChatRepo.loadStudOrTeaTree(userFrom.getSchoolName(),"student");
+                //This loads all the students for the teachers
+                users = skoolChatRepo.teacherOrStudent(userFrom.getSchoolName(),"student");
+            }else if(userFrom.getRole().equals("student")){
+                //users = skoolChatRepo.loadStudOrTeaTree(userFrom.getSchoolName(),"teacher");
+                //This loads all the teachers for the students
+                users = skoolChatRepo.teacherOrStudent(userFrom.getSchoolName(),"teacher");
+            }else if(userFrom.getRole().equals("admin")){
+                //This loads all the members of a school
+                users = skoolChatRepo.specifiUser(userFrom.getSchoolName());
+            }else if(userFrom.getRole().equals("owner")){
+                //This loads all the people registered on the platform
+                //users = skoolChatRepo.loadAllUsers(recyclerView,getActivity());
+                loadAllUsers();
+                // Log.d("Users",""+users.size());
+            }
+
+            else{
+                Toast.makeText(getActivity(),"There is no role attached to u",Toast.LENGTH_LONG).show();
+            }
+
         }else{
             Toast.makeText(getActivity(),"Argumments are null",Toast.LENGTH_LONG).show();
         }
-
-        users = new ArrayList<>();
-
-       /* contactAdapter.moveToChatScreen(new ContactAdapter.MyListener() {
-            @Override
-            public void respond(int pos) {
-                Intent intent = new Intent(getActivity(),ChatScreenActivity.class);
-                User user = users.get(pos);
-                intent.putExtra(ChatScreenActivity.RECEIVER_USER,user);
-                getActivity().startActivity(intent);
-            }
-        });*/
-
 
     }
 
@@ -89,39 +101,9 @@ public class ContactFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recent, container, false);
         textView = view.findViewById(R.id.nocontacts);
 
-        /*f(users.size()>0){
-            textView.setVisibility(View.GONE);
-        }else{
-            textView.setVisibility(View.VISIBLE);
-        }*/
         recyclerView = view.findViewById(R.id.recike);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-
-        skoolChatRepo = SkoolChatRepo.getInstanceOfSkoolchatRepo(getContext());
-        if(userFrom.getRole().equals("teacher")){
-            //users = skoolChatRepo.loadStudOrTeaTree(userFrom.getSchoolName(),"student");
-            //This loads all the students for the teachers
-            users = skoolChatRepo.teacherOrStudent(userFrom.getSchoolName(),"student");
-        }else if(userFrom.getRole().equals("student")){
-            //users = skoolChatRepo.loadStudOrTeaTree(userFrom.getSchoolName(),"teacher");
-            //This loads all the teachers for the students
-            users = skoolChatRepo.teacherOrStudent(userFrom.getSchoolName(),"teacher");
-        }else if(userFrom.getRole().equals("admin")){
-            //This loads all the members of a school
-            users = skoolChatRepo.specifiUser(userFrom.getSchoolName());
-        }else if(userFrom.getRole().equals("owner")){
-            //This loads all the people registered on the platform
-            //users = skoolChatRepo.loadAllUsers(recyclerView,getActivity());
-            loadAllUsers();
-            // Log.d("Users",""+users.size());
-        }
-
-        else{
-            Toast.makeText(getActivity(),"There is no role attached to u",Toast.LENGTH_LONG).show();
-        }
 
 
         return view;
@@ -142,6 +124,7 @@ public class ContactFragment extends Fragment {
                 Log.d("UsersForowner",""+users.size());
                 contactAdapter = new ContactAdapter(users,getActivity());
                 recyclerView.setAdapter(contactAdapter);
+                recyclerView.setLayoutManager(linearLayoutManager);
 
                 if(users.size()>0){
                     textView.setVisibility(View.GONE);

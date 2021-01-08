@@ -38,6 +38,8 @@ public class ChatListFragment extends Fragment {
     private ContactAdapter contactAdapter;
     private DatabaseReference referenceChat;
     private  DatabaseReference referenceUsers;
+    private  RecyclerView recyclerView;
+    private TextView textView;
 
     public ChatListFragment() {
         // Required empty public constructor
@@ -84,6 +86,63 @@ public class ChatListFragment extends Fragment {
 
 
 
+
+
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_chat, container, false);
+        recyclerView = view.findViewById(R.id.recyclerrrr);
+        textView = view.findViewById(R.id.nochats);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        //getList of chats gets all the data needed to display users you have already chatted with;
+        getListOfChats();
+
+        return view;
+    }
+
+    private void getListOfChats() {
+        referenceChat.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userList.clear();
+                for(DataSnapshot snap : snapshot.getChildren()){
+                    Chat chat = snap.getValue(Chat.class);
+                    assert chat != null;
+                    if(chat.getSenderId().equals(userFrom.getUid())){
+                        userList.add(chat.getReceiverId());
+                    }
+
+                    if(chat.getReceiverId().equals(userFrom.getUid())){
+                        userList.add(chat.getSenderId());
+                    }
+                }
+                readChats();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    private void setUprecycler() {
+        contactAdapter = new ContactAdapter(mUser,getContext());
+        recyclerView.setAdapter(contactAdapter);
+
+        if(mUser.size()>0){
+            textView.setVisibility(View.GONE);
+        }else{
+            textView.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void readChats() {
         mUser = new ArrayList<>();
         referenceUsers.addValueEventListener(new ValueEventListener() {
@@ -110,53 +169,7 @@ public class ChatListFragment extends Fragment {
 
                 }
 
-                contactAdapter = new ContactAdapter(mUser,getContext());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chat, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerrrr);
-        TextView textView = view.findViewById(R.id.nochats);
-        if(mUser.size()>0){
-            textView.setVisibility(View.GONE);
-        }else{
-            textView.setVisibility(View.VISIBLE);
-        }
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        //getList of chats gets all the data needed to display users you have already chatted with;
-        getListOfChats();
-        recyclerView.setAdapter(contactAdapter);
-        return view;
-    }
-
-    private void getListOfChats() {
-        referenceChat.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userList.clear();
-                for(DataSnapshot snap : snapshot.getChildren()){
-                    Chat chat = snap.getValue(Chat.class);
-                    assert chat != null;
-                    if(chat.getSenderId().equals(userFrom.getUid())){
-                        userList.add(chat.getReceiverId());
-                    }
-
-                    if(chat.getReceiverId().equals(userFrom.getUid())){
-                        userList.add(chat.getSenderId());
-                    }
-                }
-                readChats();
+                setUprecycler();
             }
 
             @Override
